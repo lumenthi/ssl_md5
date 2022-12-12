@@ -52,7 +52,7 @@ int main(int ac, char **av)
 	if (ret < 0)
 		return -1;
 	else if (ret != 0)
-		ft_ssl(stdin_msg, opt);
+		ft_ssl(stdin_msg, opt, STDIN);
 
 	if (stdin_msg)
 		free(stdin_msg);
