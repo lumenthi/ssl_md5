@@ -6,14 +6,14 @@
 #    By: lumenthi <lumenthi@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/12/22 14:06:43 by lumenthi          #+#    #+#              #
-#    Updated: 2022/12/12 09:48:20 by lumenthi         ###   ########.fr        #
+#    Updated: 2022/12/12 10:30:53 by lumenthi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ft_ssl
 
 CC = gcc
-FLAGS = -Wall -Werror -Wextra -g
+FLAGS = -Wall -Werror -Wextra
 
 GREEN = '\033[4;32m'
 RED = '\033[4;31m'
@@ -147,5 +147,9 @@ todo:
 	@ printf "%b" $(WARNING)
 	@ grep -nr "TODO" $(SRCDIR) $(HEADDIR) || true
 	@ printf "%b" $(BLANK)
+
+run: # Make -j support
+	@ $(MAKE) all
+	@ ./$(NAME) "42"
 
 .PHONY: all clean fclean re todo

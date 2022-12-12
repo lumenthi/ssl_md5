@@ -1,12 +1,12 @@
 #include "../headers/ssl.h"
 #include "../headers/options.h"
 
-int ft_ssl(uint64_t opt)
+int ft_ssl(char *message, uint64_t opt)
 {
-	ft_putstr("ft_ssl\n");
-
 	if (opt & OPT_VERBOSE)
-		ft_putstr("verbose\n");
+		verbose_summary(message, opt);
+
+	ft_putstr("Doing things\n");
 
 	return 0;
 }

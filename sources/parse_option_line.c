@@ -42,6 +42,7 @@ int		parse_option_line(int ac, char **av, uint64_t *ret)
 
 	while (i < ac) {
 		if (!is_arg_an_opt(av, i, optstring, long_options)) {
+			ft_ssl(av[i], *ret);
 			arg_count++;
 		}
 		i++;
