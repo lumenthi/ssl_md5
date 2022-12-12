@@ -1,5 +1,6 @@
 #include "../headers/ssl.h"
 #include "../headers/options.h"
+#include <unistd.h>
 
 void print_help()
 {
@@ -17,23 +18,28 @@ void print_usage()
 }
 
 /* TODO: Store informations in a structure (len, message, mode) */
-void verbose_summary(char *message, uint64_t opt, uint8_t mode)
+void verbose_summary(struct message message, uint64_t opt)
 {
 	ft_putstr("======SUMMARY======\n");
 
 	/* TODO: Display a shorten version if string is too big */
-	ft_putstr("Message: ");
-	ft_putstr(message);
-	ft_putchar('\n');
+	ft_putstr("Message: [");
+	if (message.len > PREVIEW) {
+		write(STDOUT_FILENO, message.content, PREVIEW);
+		ft_putstr("...");
+	}
+	else
+		ft_putstr(message.content);
+	ft_putstr("]\n");
 
 	ft_putstr("Length: ");
-	ft_putnbr(ft_strlen(message));
+	ft_putnbr(message.len);
 	ft_putchar('\n');
 
 	ft_putstr("Input mode: ");
-	if (mode == ARGUMENT)
+	if (message.input_mode == ARGUMENT)
 		ft_putstr("ARGUMENT\n");
-	else if (mode == STDIN)
+	else if (message.input_mode == STDIN)
 		ft_putstr("STDIN\n");
 	else
 		ft_putstr("UNKNOWN\n");

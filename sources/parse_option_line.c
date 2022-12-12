@@ -40,9 +40,14 @@ int		parse_option_line(int ac, char **av, uint64_t *ret)
 		}
 	}
 
+	struct message message = {0};
+
 	while (i < ac) {
 		if (!is_arg_an_opt(av, i, optstring, long_options)) {
-			ft_ssl(av[i], *ret, ARGUMENT);
+			message.len = ft_strlen(av[i]);
+			message.content = av[i];
+			message.input_mode = ARGUMENT;
+			ft_ssl(message, *ret);
 			arg_count++;
 		}
 		i++;

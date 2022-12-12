@@ -75,7 +75,7 @@ int main(int ac, char **av)
 		return -1;
 	else if (ret != 0) {
 		message.input_mode = STDIN;
-		ft_ssl(message.content, opt, STDIN);
+		ft_ssl(message, opt);
 	}
 
 	if (message.content)
