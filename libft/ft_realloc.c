@@ -6,7 +6,7 @@
 /*   By: lumenthi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 10:52:50 by lumenthi          #+#    #+#             */
-/*   Updated: 2022/12/12 11:39:07 by lumenthi         ###   ########.fr       */
+/*   Updated: 2022/12/12 13:21:13 by lumenthi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,21 @@
 
 void	*ft_realloc(void *ptr, size_t size)
 {
-	void *new_ptr = malloc(size);
+	char *newptr;
 
-	if (new_ptr) {
-		ft_bzero(new_ptr, size);
-		if (ptr)
-			ft_memmove(new_ptr, ptr, size);
+	if (!size && ptr)
+	{
+		if (!(newptr = (char *)malloc(1)))
+			return (NULL);
+		ft_memdel(&ptr);
+		return (newptr);
 	}
-
+	if (!(newptr = (char *)malloc(size)))
+		return (NULL);
 	if (ptr)
-		free(ptr);
-
-	return new_ptr;
+	{
+		ft_memcpy(newptr, ptr, size);
+		ft_memdel(&ptr);
+	}
+	return (newptr);
 }
