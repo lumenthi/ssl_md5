@@ -3,10 +3,12 @@
 
 int main(int ac, char **av)
 {
-	if (parse_option_line(ac, av))
+	uint64_t	opt;
+
+	if (parse_option_line(ac, av, &opt))
 		return -1;
 
 	/* TODO: No printf allowed */
-	ft_ssl();
+	ft_ssl(opt);
 	return 0;
 }

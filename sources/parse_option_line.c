@@ -2,7 +2,7 @@
 #include "../headers/ssl.h"
 #include "options.h"
 
-int		parse_option_line(int ac, char **av)
+int		parse_option_line(int ac, char **av, uint64_t *ret)
 {
 	int opt = 0;
 	int option_index = 0;
@@ -33,6 +33,7 @@ int		parse_option_line(int ac, char **av)
 				print_version();
 				return 1;
 			case 'v':
+				*ret |= OPT_VERBOSE;
 				break;
 			default:
 				return 1;
