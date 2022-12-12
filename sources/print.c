@@ -16,6 +16,7 @@ void print_usage()
 	ft_putstr("Usage menu\n");
 }
 
+/* TODO: Store informations in a structure (len, message, mode) */
 void verbose_summary(char *message, uint64_t opt, uint8_t mode)
 {
 	ft_putstr("======SUMMARY======\n");
@@ -23,6 +24,10 @@ void verbose_summary(char *message, uint64_t opt, uint8_t mode)
 	/* TODO: Display a shorten version if string is too big */
 	ft_putstr("Message: ");
 	ft_putstr(message);
+	ft_putchar('\n');
+
+	ft_putstr("Length: ");
+	ft_putnbr(ft_strlen(message));
 	ft_putchar('\n');
 
 	ft_putstr("Input mode: ");

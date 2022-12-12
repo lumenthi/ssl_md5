@@ -21,4 +21,7 @@ void	verbose_summary(char *message, uint64_t opt, uint8_t mode);
 /* parse_option_line.c */
 int		parse_option_line(int ac, char **av, uint64_t *opt);
 
+/* TODO: Remove after (printf debug) */
+#include <stdio.h>
+
 #endif

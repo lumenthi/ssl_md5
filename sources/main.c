@@ -8,8 +8,9 @@
 /* TODO: Check error cases leaks etc.. ? Force them */
 static int read_from_stdin(char **buf)
 {
-	size_t i = 1;
+	size_t i = 2;
 	int fd;
+	char *tmp;
 
 	fd = open(STDIN_DEVICE, O_NONBLOCK|O_RDONLY);
 	if (fd == -1) {
@@ -23,18 +24,21 @@ static int read_from_stdin(char **buf)
 		return -1;
 	}
 	ft_bzero(*buf, READ_SIZE);
+	tmp = *buf;
 
-	while((read(fd, *buf, READ_SIZE) > 0)) {
+	while((read(fd, tmp, READ_SIZE) > 0)) {
 		if (!(*buf = ft_realloc(*buf, i * READ_SIZE))) {
 			ft_putstr_fd("[!] Cannot read from STDIN, malloc failed\n", STDERR_FILENO);
 			return -1;
 		}
+		tmp = *buf;
+		tmp = (void*)tmp + (READ_SIZE*(i-1));
 		i++;
 	}
 
 	close(fd);
 
-	return i-1;
+	return i-2;
 }
 
 /* TODO: No printf allowed */
