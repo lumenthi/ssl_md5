@@ -9,7 +9,7 @@ static void print_mem(void *address, size_t size)
 	size_t i = 1;
 
 	while (i <= size) {
-		printf("%02x ", ((char *)address)[i-1]);
+		printf("%02x ", ((unsigned char *)address)[i-1]);
 		if (!(i%16))
 			printf("\n");
 		i++;
@@ -51,11 +51,12 @@ static size_t align(size_t value, size_t round)
 
 int md5(struct message message, uint64_t opt)
 {
-	(void)message;
-	(void)opt;
 	size_t nb_chunks = MD5_PADDED(message.len)/RAW_CHUNK_SIZE;
 	size_t i = 0;
+	size_t offset = 0;
+	size_t count = 0;
 	uint8_t *chunks[nb_chunks];
+	uint8_t *content_bits;
 
 	ft_bzero(chunks, sizeof(chunks));
 
@@ -67,6 +68,7 @@ int md5(struct message message, uint64_t opt)
 		ft_putstr(" bits\n");
 	}
 
+	/* Allocating chunks and populating them */
 	while (i < nb_chunks) {
 		chunks[i] = malloc(RAW_CHUNK_SIZE);
 		if (!(chunks[i])) {
@@ -76,11 +78,27 @@ int md5(struct message message, uint64_t opt)
 			break;
 		}
 		ft_bzero(chunks[i], RAW_CHUNK_SIZE);
+		/* Last chunk */
+		content_bits = (uint8_t *)(chunks[i]);
+		offset = i*RAW_CHUNK_SIZE;
+		count = 0;
+		while (count < RAW_CHUNK_SIZE) {
+			content_bits[count] = (message.content)[offset];
+			if (offset >= message.len) {
+				content_bits[count] = 0x01;
+				break;
+			}
+			offset++;
+			count++;
+		}
+		if (i+1 >= nb_chunks) {
+			uint64_t *size_bits = (uint64_t *)(chunks[i]+RAW_CHUNK_SIZE-sizeof(uint64_t));
+			*size_bits = message.len;
+		}
 		i++;
 	}
 
-	(void)print_chunks;
-	//print_chunks(chunks, nb_chunks);
+	print_chunks(chunks, nb_chunks);
 
 	/* Freeing chunks */
 	if (opt & OPT_VERBOSE) {
