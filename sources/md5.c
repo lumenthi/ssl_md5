@@ -79,10 +79,21 @@ int md5(struct message message, uint64_t opt)
 		i++;
 	}
 
-	print_chunks(chunks, nb_chunks);
+	(void)print_chunks;
+	//print_chunks(chunks, nb_chunks);
 
 	/* Freeing chunks */
+	if (opt & OPT_VERBOSE) {
+		ft_putstr("[*] Freeing ");
+		ft_putnbr(nb_chunks);
+		ft_putstr(" chunk(s) of ");
+		ft_putnbr(RAW_CHUNK_SIZE*CHAR_BIT);
+		ft_putstr(" bits\n");
+	}
 	free_chunks(chunks, nb_chunks);
+
+	if (opt & OPT_VERBOSE)
+		ft_putstr("[*] Done\n");
 
 	return 0;
 }
