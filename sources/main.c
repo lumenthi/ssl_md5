@@ -25,7 +25,7 @@ static void	*brealloc(void *ptr, size_t new_size, size_t old_size)
 static int read_from_stdin(struct message *message)
 {
 	size_t i = 2;
-	size_t ret;
+	int ret;
 	int fd;
 	char *tmp;
 
