@@ -1,13 +1,7 @@
-#ifndef MD5_H
-# define MD5_H
+#ifndef FT_MD5_H
+# define FT_MD5_H
 
 #include <limits.h>
-
-/*
- * The padding works as follows: first, a single bit, 1, is appended to the end of the message.
- * This is followed by as many zeros as are required to bring the length of the message up to 64 bits fewer than a multiple of 512.
- * The remaining bits are filled up with 64 bits representing the length of the original message, modulo 264
-*/
 
 /* Blocks of 512 bits (64 Bytes) */
 # define RAW_CHUNK_SIZE (512/(sizeof(char) * CHAR_BIT))
@@ -19,7 +13,17 @@
  */
 # define MD5_PADDED(len) (align(len+1+sizeof(uint64_t), RAW_CHUNK_SIZE))
 
-/* Add the size of the original message in a 64 bits format */
+/* Constants defined by the MD5 algorithm */
+#define MD5_A 0x67452301
+#define MD5_B 0xefcdab89
+#define MD5_C 0x98badcfe
+#define MD5_D 0x10325476
+
+/* Bit-manipulation functions defined by the MD5 algorithm */
+#define MD5_F(X, Y, Z) ((X & Y) | (~X & Z))
+#define MD5_G(X, Y, Z) ((X & Z) | (Y & ~Z))
+#define MD5_H(X, Y, Z) (X ^ Y ^ Z)
+#define MD5_I(X, Y, Z) (Y ^ (X | ~Z))
 
 /* md5.c */
 int		md5(struct message message, uint64_t opt);
