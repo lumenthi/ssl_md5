@@ -1,5 +1,5 @@
 #include "libft.h"
-#include <stdio.h>
+#include <unistd.h>
 
 /*
  **	When arg is the beggining of multiple possible long opts
@@ -8,8 +8,11 @@
 static void	print_ambiguous_possibilities(char * const argv[], int optindex,
 		const struct option *longopts)
 {
-	fprintf(stderr, "%s: option '--%s' is ambiguous; possibilities:",
-			argv[0], argv[optindex] + 2);
+	// fprintf(stderr, "%s: option '--%s' is ambiguous; possibilities:", argv[0], argv[optindex] + 2);
+	ft_putstr_fd(argv[0], STDERR_FILENO);
+	ft_putstr_fd(": option '--", STDERR_FILENO);
+	ft_putstr_fd(argv[optindex]+2, STDERR_FILENO);
+	ft_putstr_fd("' is ambiguous; possibilities:", STDERR_FILENO);
 	int i = 0;
 	//	Print every possible option starting with this
 	while (1)
@@ -18,11 +21,16 @@ static void	print_ambiguous_possibilities(char * const argv[], int optindex,
 		if (current_opt.name == 0 && current_opt.has_arg == 0
 				&& current_opt.flag == 0 && current_opt.val == 0)
 			break;
-		if (ft_optbegin(current_opt.name, argv[optindex] + 2))
-			fprintf(stderr, " '--%s'", current_opt.name);
+		if (ft_optbegin(current_opt.name, argv[optindex] + 2)) {
+			// fprintf(stderr, " '--%s'", current_opt.name);
+			ft_putstr_fd(" '--", STDERR_FILENO);
+			ft_putstr_fd(current_opt.name, STDERR_FILENO);
+			ft_putstr_fd("'", STDERR_FILENO);
+		}
 		i++;
 	}
-	fprintf(stderr, "\n");
+	// fprintf(stderr, "\n");
+	ft_putchar_fd('\n', STDERR_FILENO);
 }
 
 /*
@@ -36,8 +44,11 @@ static int	check_required_args(char * const argv[], int optindex, int res_index,
 	{
 		if (!ft_strchr(argv[optindex], '=') && argv[optindex + 1] == NULL)
 		{
-			fprintf(stderr, "%s: option '--%s' requires an argument\n",
-					argv[0], longopts[res_index].name);
+			// fprintf(stderr, "%s: option '--%s' requires an argument\n", argv[0], longopts[res_index].name);
+			ft_putstr_fd(argv[0], STDERR_FILENO);
+			ft_putstr_fd(": option requires an argument -- '", STDERR_FILENO);
+			ft_putstr_fd(longopts[res_index].name, STDERR_FILENO);
+			ft_putstr_fd("'\n", STDERR_FILENO);
 			return '?';
 		}
 		*requires_arg = 1;
@@ -48,8 +59,11 @@ static int	check_required_args(char * const argv[], int optindex, int res_index,
 			*requires_arg = 1;
 		else if (longopts[res_index].has_arg == no_argument)
 		{
-			fprintf(stderr, "%s: option '--%s' doesn't allow an argument\n",
-					argv[0], longopts[res_index].name);
+			// fprintf(stderr, "%s: option '--%s' doesn't allow an argument\n", argv[0], longopts[res_index].name);
+			ft_putstr_fd(argv[0], STDERR_FILENO);
+			ft_putstr_fd(": option '--", STDERR_FILENO);
+			ft_putstr_fd(longopts[res_index].name, STDERR_FILENO);
+			ft_putstr_fd("' doesn't allow an argument\n", STDERR_FILENO);
 			return '?';
 		}
 	}
@@ -109,8 +123,11 @@ static int	check_long_opt(char * const argv[], int optindex,
 		return check_required_args(argv, optindex, res_index, longopts, requires_arg);
 	}
 	//	Current option is not valid
-	fprintf(stderr, "%s: unrecognized option '%s'\n",
-			argv[0], argv[optindex]);
+	// fprintf(stderr, "%s: unrecognized option '%s'\n", argv[0], argv[optindex]);
+	ft_putstr_fd(argv[0], STDERR_FILENO);
+	ft_putstr_fd(": unrecognized option '", STDERR_FILENO);
+	ft_putstr_fd(argv[optindex], STDERR_FILENO);
+	ft_putstr_fd("'\n", STDERR_FILENO);
 	return '?';
 }
 
@@ -180,13 +197,16 @@ static int set_short_optarg(char * const argv[], char **optarg, int optindex, in
 	{
 		if (argv[optindex + 1] == NULL)
 		{
-			fprintf(stderr, "%s: option requires an argument -- '%c'\n",
-					argv[0], argv[optindex][nextchar]);
+			// fprintf(stderr, "%s: option requires an argument -- '%c'\n", argv[0], argv[optindex][nextchar]);
+			ft_putstr_fd(argv[0], STDERR_FILENO);
+			ft_putstr_fd(": option requires an argument -- '", STDERR_FILENO);
+			ft_putchar_fd(argv[optindex][nextchar], STDERR_FILENO);
+			ft_putstr_fd("'\n", STDERR_FILENO);
 			return -1;
 		}
 		*optarg = argv[optindex + 1];
 	}
-	//printf("optarg = |%s|\n", *optarg);
+	// printf("optarg = |%s|\n", *optarg);
 	return 0;
 }
 
@@ -225,9 +245,13 @@ static int	parse_option_line(char * const argv[], const char *optstring,
 	{
 		ret = check_short_opt(argv[*optindex][*nextchar], optstring, &requires_arg);
 		//	Invalid option
-		if (ret == '?')
-			fprintf(stderr, "%s: invalid option -- '%c'\n",
-					argv[0], argv[*optindex][*nextchar]);
+		if (ret == '?') {
+			// fprintf(stderr, "%s: invalid option -- '%c'\n", argv[0], argv[*optindex][*nextchar]);
+			ft_putstr_fd(argv[0], STDERR_FILENO);
+			ft_putstr_fd(": invalid option -- '", STDERR_FILENO);
+			ft_putchar_fd(argv[*optindex][*nextchar], STDERR_FILENO);
+			ft_putstr_fd("'\n", STDERR_FILENO);
+		}
 		//	Option that requires an arg (or optional arg)
 		else if (requires_arg == 1 || (requires_arg == 2
 				&& ((argv[*optindex + 1] && argv[*optindex + 1][0] != '-')
