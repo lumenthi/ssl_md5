@@ -7,7 +7,7 @@ int ft_ssl(struct message message, uint64_t opt)
 	if (opt & OPT_VERBOSE)
 		verbose_summary(message, opt);
 
-	md5(message);
+	md5(message, opt);
 
 	return 0;
 }

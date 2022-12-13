@@ -66,7 +66,6 @@ int main(int ac, char **av)
 	struct message message = {0};
 	int ret;
 
-	/* TODO: Remove printfs in parse_option_line */
 	if (parse_option_line(ac, av, &opt))
 		return -1;
 

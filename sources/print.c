@@ -17,12 +17,10 @@ void print_usage()
 	ft_putstr("Usage menu\n");
 }
 
-/* TODO: Store informations in a structure (len, message, mode) */
 void verbose_summary(struct message message, uint64_t opt)
 {
 	ft_putstr("======SUMMARY======\n");
 
-	/* TODO: Display a shorten version if string is too big */
 	ft_putstr("Message: [");
 	if (message.len > PREVIEW) {
 		write(STDOUT_FILENO, message.content, PREVIEW);
