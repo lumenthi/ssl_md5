@@ -25,6 +25,8 @@
 #define MD5_H(X, Y, Z) (X ^ Y ^ Z)
 #define MD5_I(X, Y, Z) (Y ^ (X | ~Z))
 
+#define rotate_left(x, n) ((x << n) | (x >> (32 - n)))
+
 /* md5.c */
 int		md5(struct message message, uint64_t opt);
 

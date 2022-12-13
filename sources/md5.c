@@ -51,44 +51,15 @@ static size_t align(size_t value, size_t round)
 
 static int md5_compute(uint8_t **chunks, size_t nb_chunks)
 {
-	uint32_t A,B,C,D;(void)A;(void)B;(void)C;(void)D;
-	uint32_t *cur_chunk;
-	size_t i = 0;
-	size_t j = 0;
-
-	/* Break chunk into sixteen 32-bit words */
-	while (i < nb_chunks) {
-		A = MD5_A;
-		B = MD5_B;
-		C = MD5_C;
-		D = MD5_D;
-
-		cur_chunk = (uint32_t *)chunks[i];
-		j = 0;
-		while (j < 16) {
-			print_mem(&cur_chunk[j], sizeof(uint32_t));
-			printf("\n");
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-
-	return 0;
-}
-
-int md5(struct message message, uint64_t opt)
-{
-	/* TODO: Remove the STATIC keywork */
 	/* Constants defined by the MD5 algorithm */
-	static uint32_t S[] = {
+	uint32_t S[] = {
 		7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
 		5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
 		4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
 		6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 	};
 
-	static uint32_t K[] = {
+	uint32_t K[] = {
 		0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 		0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 		0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -106,9 +77,63 @@ int md5(struct message message, uint64_t opt)
 		0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
 		0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 	};
-	(void)S;
-	(void)K;
 
+	uint32_t A,B,C,D,E;(void)A;(void)B;(void)C;(void)D;(void)E;
+	uint32_t *cur_chunk;
+	size_t i = 0;
+	size_t j = 0;
+	uint32_t f;(void)f;
+
+	/* Break chunk into sixteen 32-bit words */
+	while (i < nb_chunks) {
+		A = MD5_A;
+		B = MD5_B;
+		C = MD5_C;
+		D = MD5_D;
+
+		cur_chunk = (uint32_t *)chunks[i];
+		j = 0;
+		while (j < 16) {
+			print_mem(&cur_chunk[j], sizeof(uint32_t));
+			printf("\n");
+			if (i < 16) {
+				E = MD5_F(B, C, D);
+				f = i;
+			}
+			else if (i < 32) {
+				E = MD5_G(B, C, D);
+				f = ((5*i)+1) % 16;
+			}
+			else if (i < 48) {
+				E = MD5_H(B, C, D);
+				f = ((3*i)+5) % 16;
+			}
+			else if (i < 64) {
+				E = MD5_I(B, C, D);
+				f = (7*i) % 16;
+			}
+			uint32_t tmp = D;
+			D = C;
+			C = B;
+			B = rotate_left((A+E+K[i]+cur_chunk[f]), S[i]) + B;
+			A = tmp;
+			j++;
+		}
+		printf("\n");
+		i++;
+	}
+	printf("Computed: %u%u%u%u\n",
+		(uint32_t)(MD5_A+A),
+		(uint32_t)(MD5_B+B),
+		(uint32_t)(MD5_C+C),
+		(uint32_t)(MD5_D+D)
+	);
+
+	return 0;
+}
+
+int md5(struct message message, uint64_t opt)
+{
 	size_t nb_chunks = MD5_PADDED(message.len)/RAW_CHUNK_SIZE;
 	size_t i = 0;
 	size_t offset = 0;
@@ -158,8 +183,9 @@ int md5(struct message message, uint64_t opt)
 		i++;
 	}
 
+	(void)print_chunks;
+	/* print_chunks(chunks, nb_chunks); */
 	md5_compute(chunks, nb_chunks);
-	print_chunks(chunks, nb_chunks);
 
 	/* Freeing chunks */
 	if (opt & OPT_VERBOSE) {
