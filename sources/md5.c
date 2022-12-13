@@ -85,7 +85,9 @@ int md5(struct message message, uint64_t opt)
 		while (count < RAW_CHUNK_SIZE) {
 			content_bits[count] = (message.content)[offset];
 			if (offset >= message.len) {
-				content_bits[count] = 0x01;
+				/* Setting the bit after our message to '1' */
+				/* Writing bits '1000 0000' (0x80) */
+				content_bits[count] = 0x80;
 				break;
 			}
 			offset++;
