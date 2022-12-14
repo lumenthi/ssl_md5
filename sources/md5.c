@@ -78,55 +78,65 @@ static int md5_compute(uint8_t **chunks, size_t nb_chunks)
 		0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 	};
 
-	uint32_t A,B,C,D,E;(void)A;(void)B;(void)C;(void)D;(void)E;
+	uint32_t A,B,C,D,E,f; /* MD5 Processing variables */
+	uint32_t buffer[4] = {MD5_A, MD5_B, MD5_C, MD5_D};
 	uint32_t *cur_chunk;
-	size_t i = 0;
-	size_t j = 0;
-	uint32_t f;(void)f;
+	size_t i = 0, j = 0, k = 0; /* Counters */
+	uint32_t tmp;
 
 	/* Break chunk into sixteen 32-bit words */
 	while (i < nb_chunks) {
-		A = MD5_A;
-		B = MD5_B;
-		C = MD5_C;
-		D = MD5_D;
-
 		cur_chunk = (uint32_t *)chunks[i];
 		j = 0;
 		while (j < 16) {
-			print_mem(&cur_chunk[j], sizeof(uint32_t));
-			printf("\n");
-			if (i < 16) {
-				E = MD5_F(B, C, D);
-				f = i;
+			/* For each uint32_t blocks, do */
+			// print_mem(&cur_chunk[j], sizeof(uint32_t));
+			// printf("\n");
+			/* Init hash variables */
+			A = buffer[0];
+			B = buffer[1];
+			C = buffer[2];
+			D = buffer[3];
+			k = 0;
+			/* Main loop */
+			while (k < 64) {
+				if (k < 16) {
+					E = MD5_F(B, C, D);
+					f = k;
+				}
+				else if (k < 32) {
+					E = MD5_G(B, C, D);
+					f = ((5*k)+1) % 16;
+				}
+				else if (k < 48) {
+					E = MD5_H(B, C, D);
+					f = ((3*k)+5) % 16;
+				}
+				else {
+					E = MD5_I(B, C, D);
+					f = (7*k) % 16;
+				}
+				tmp = D;
+				D = C;
+				C = B;
+				B = rotate_left((A+E+K[k]+cur_chunk[f]), S[k]) + B;
+				A = tmp;
+				k++;
 			}
-			else if (i < 32) {
-				E = MD5_G(B, C, D);
-				f = ((5*i)+1) % 16;
-			}
-			else if (i < 48) {
-				E = MD5_H(B, C, D);
-				f = ((3*i)+5) % 16;
-			}
-			else if (i < 64) {
-				E = MD5_I(B, C, D);
-				f = (7*i) % 16;
-			}
-			uint32_t tmp = D;
-			D = C;
-			C = B;
-			B = rotate_left((A+E+K[i]+cur_chunk[f]), S[i]) + B;
-			A = tmp;
+			buffer[0] += A;
+			buffer[1] += B;
+			buffer[2] += C;
+			buffer[3] += D;
 			j++;
 		}
-		printf("\n");
+		// printf("\n");
 		i++;
 	}
-	printf("Computed: %u%u%u%u\n",
-		(uint32_t)(MD5_A+A),
-		(uint32_t)(MD5_B+B),
-		(uint32_t)(MD5_C+C),
-		(uint32_t)(MD5_D+D)
+	printf("Computed: %x%x%x%x\n",
+		buffer[0],
+		buffer[1],
+		buffer[2],
+		buffer[3]
 	);
 
 	return 0;
