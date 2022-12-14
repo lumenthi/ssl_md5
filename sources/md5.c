@@ -58,7 +58,6 @@ static int md5_compute(uint8_t **chunks, size_t nb_chunks)
 		4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
 		6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 	};
-
 	uint32_t K[] = {
 		0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 		0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
@@ -81,62 +80,57 @@ static int md5_compute(uint8_t **chunks, size_t nb_chunks)
 	uint32_t A,B,C,D,E,f; /* MD5 Processing variables */
 	uint32_t buffer[4] = {MD5_A, MD5_B, MD5_C, MD5_D};
 	uint32_t *cur_chunk;
-	size_t i = 0, j = 0, k = 0; /* Counters */
-	uint32_t tmp;
+	size_t i = 0, k = 0; /* Counters */
 
 	/* Break chunk into sixteen 32-bit words */
 	while (i < nb_chunks) {
 		cur_chunk = (uint32_t *)chunks[i];
-		j = 0;
-		while (j < 16) {
-			/* For each uint32_t blocks, do */
-			// print_mem(&cur_chunk[j], sizeof(uint32_t));
-			// printf("\n");
-			/* Init hash variables */
-			A = buffer[0];
-			B = buffer[1];
-			C = buffer[2];
-			D = buffer[3];
-			k = 0;
-			/* Main loop */
-			while (k < 64) {
-				if (k < 16) {
-					E = MD5_F(B, C, D);
-					f = k;
-				}
-				else if (k < 32) {
-					E = MD5_G(B, C, D);
-					f = ((5*k)+1) % 16;
-				}
-				else if (k < 48) {
-					E = MD5_H(B, C, D);
-					f = ((3*k)+5) % 16;
-				}
-				else {
-					E = MD5_I(B, C, D);
-					f = (7*k) % 16;
-				}
-				tmp = D;
-				D = C;
-				C = B;
-				B = rotate_left((A+E+K[k]+cur_chunk[f]), S[k]) + B;
-				A = tmp;
-				k++;
-			}
-			buffer[0] += A;
-			buffer[1] += B;
-			buffer[2] += C;
-			buffer[3] += D;
-			j++;
-		}
+		/* For each uint32_t blocks, do */
+		// printf("Computing chunk %ld\n", i);
+		// print_mem(cur_chunk, sizeof(uint32_t) * 16);
 		// printf("\n");
+		/* Init hash variables for this chunk */
+		A = buffer[0];
+		B = buffer[1];
+		C = buffer[2];
+		D = buffer[3];
+		k = 0;
+		/* Main loop */
+		while (k < 64) {
+			if (k < 16) {
+				E = MD5_F(B, C, D);
+				f = k;
+			}
+			else if (k < 32) {
+				E = MD5_G(B, C, D);
+				f = ((5*k)+1) % 16;
+			}
+			else if (k < 48) {
+				E = MD5_H(B, C, D);
+				f = ((3*k)+5) % 16;
+			}
+			else {
+				E = MD5_I(B, C, D);
+				f = (7*k) % 16;
+			}
+			E = E + A + K[k] + cur_chunk[f];
+			A = D;
+			D = C;
+			C = B;
+			B = B + rotate_left(E, S[k]);
+			k++;
+		}
+		buffer[0] += A;
+		buffer[1] += B;
+		buffer[2] += C;
+		buffer[3] += D;
 		i++;
 	}
-	printf("Computed: %x%x%x%x\n",
-		buffer[0],
-		buffer[1],
-		buffer[2],
-		buffer[3]
+	printf("%08x%08x%08x%08x\n",
+		(uint32_t)buffer[0],
+		(uint32_t)buffer[1],
+		(uint32_t)buffer[2],
+		(uint32_t)buffer[3]
 	);
 
 	return 0;
