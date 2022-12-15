@@ -3,7 +3,7 @@
 #include "options.h"
 #include <stdlib.h>
 
-static void	push_message(t_msg **head, t_msg *new)
+static void push_message(t_msg **head, t_msg *new)
 {
 	t_msg *tmp = *head;
 
@@ -16,7 +16,7 @@ static void	push_message(t_msg **head, t_msg *new)
 	}
 }
 
-void	free_messages(t_msg **head)
+void free_messages(t_msg **head)
 {
 	t_msg *current = *head;
 	t_msg *next;
@@ -61,7 +61,7 @@ static void add_message(t_msg **head, struct message message)
 	push_message(head, tmp);
 }
 
-int		parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
+int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 {
 	int opt = 0;
 	int option_index = 0;

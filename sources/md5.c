@@ -229,11 +229,22 @@ int md5(struct message message, uint64_t opt)
 			swap_uint32(digest[2]),
 			swap_uint32(digest[3])
 		);
+		printf("  ");
+		fflush(stdout);
 		if (message.input_mode == STDIN)
-			printf("  -");
+			printf("-");
 		else if (message.input_mode == FILE) {
 			if (message.filename)
-				printf("  %s", message.filename);
+				printf("%s", message.filename);
+		}
+		else if (message.input_mode == ARGUMENT) {
+			if (message.len > PREVIEW) {
+				ft_putchar('\"');
+				write(STDOUT_FILENO, message.content, PREVIEW);
+				ft_putstr("...\"");
+			}
+			else
+				printf("\"%s\"", message.content);
 		}
 		printf("\n");
 	}
