@@ -39,6 +39,8 @@ void verbose_summary(struct message message, uint64_t opt)
 		ft_putstr("ARGUMENT\n");
 	else if (message.input_mode == STDIN)
 		ft_putstr("STDIN\n");
+	else if (message.input_mode == FILE)
+		ft_putstr("FILE\n");
 	else
 		ft_putstr("UNKNOWN\n");
 

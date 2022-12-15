@@ -22,22 +22,29 @@ static void	*brealloc(void *ptr, size_t new_size, size_t old_size)
 }
 
 /* TODO: Check error cases leaks etc.. ? Force them */
-static int read_from_stdin(struct message *message)
+/* TODO: Handle `echo -n "" | ./ft_ssl` */
+int read_from(struct message *message, char *file)
 {
 	size_t i = 2;
 	int ret;
 	int fd;
 	char *tmp;
 
-	fd = open(STDIN_DEVICE, O_NONBLOCK|O_RDONLY);
+	/* File opening */
+	if (!file)
+		fd = open(STDIN_DEVICE, O_NONBLOCK|O_RDONLY);
+	else
+		fd = open(file, O_NONBLOCK|O_RDONLY);
 	if (fd == -1) {
-		ft_putstr_fd("[!] Cannot read from STDIN, open failed\n", STDERR_FILENO);
+		dprintf(STDERR_FILENO,
+			"[!] Cannot read from %s, open failed\n", file ? file:"STDIN");
 		return -1;
 	}
 
 	/* malloc(READ_SIZE); */
 	if (!(message->content = malloc(sizeof(char) * READ_SIZE))) {
-		ft_putstr_fd("[!] Cannot read from STDIN, malloc failed\n", STDERR_FILENO);
+		dprintf(STDERR_FILENO,
+			"[!] Cannot read from %s, malloc failed\n", file ? file:"STDIN");
 		return -1;
 	}
 	ft_bzero(message->content, READ_SIZE);
@@ -45,7 +52,8 @@ static int read_from_stdin(struct message *message)
 
 	while((ret = read(fd, tmp, READ_SIZE)) > 0) {
 		if (!(message->content = brealloc(message->content, i*READ_SIZE, (i-1)*READ_SIZE))) {
-			ft_putstr_fd("[!] Cannot read from STDIN, malloc failed\n", STDERR_FILENO);
+			dprintf(STDERR_FILENO,
+				"[!] Cannot read from %s, malloc failed\n", file ? file:"STDIN");
 			return -1;
 		}
 		message->len += ret;
@@ -55,11 +63,9 @@ static int read_from_stdin(struct message *message)
 	}
 
 	close(fd);
-
 	return i-2;
 }
 
-/* TODO: No printf allowed */
 int main(int ac, char **av)
 {
 	uint64_t	opt = 0;
@@ -69,7 +75,7 @@ int main(int ac, char **av)
 	if (parse_option_line(ac, av, &opt))
 		return -1;
 
-	ret = read_from_stdin(&message);
+	ret = read_from(&message, NULL);
 	if (ret < 0)
 		return -1;
 	else if (ret != 0) {

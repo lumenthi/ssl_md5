@@ -1,27 +1,30 @@
 #ifndef SSL_H
 # define SSL_H
 
-/* TODO: Remove after (printf debug) */
-#include <stdio.h>
-
 #include "libft.h"
+#include <stdio.h>
 
 /* STDIN read */
 # define STDIN_DEVICE	"/dev/stdin"
 # define READ_SIZE		1024
 
 /* Input mode types */
-# define ARGUMENT	1
+# define FILE		1
 # define STDIN		2
+# define ARGUMENT	3
 
 /* Debug preview */
 # define PREVIEW	20
 
 struct	message {
+	char *filename; /* If input mode is a file, keep the filename */
 	char *content; /* Message's buffer */
 	size_t len; /* Length of the message */
 	uint8_t input_mode; /* Input mode for the message */
 };
+
+/* main.c */
+int		read_from(struct message *message, char *file);
 
 /* ssl.c */
 int		ft_ssl(struct message message, uint64_t opt);

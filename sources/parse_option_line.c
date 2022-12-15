@@ -1,6 +1,7 @@
 #include "../libft/libft.h"
 #include "../headers/ssl.h"
 #include "options.h"
+#include <stdlib.h>
 
 int		parse_option_line(int ac, char **av, uint64_t *ret)
 {
@@ -41,13 +42,24 @@ int		parse_option_line(int ac, char **av, uint64_t *ret)
 	}
 
 	struct message message = {0};
+	int read_ret;
 
 	while (i < ac) {
 		if (!is_arg_an_opt(av, i, optstring, long_options)) {
-			message.len = ft_strlen(av[i]);
-			message.content = av[i];
-			message.input_mode = ARGUMENT;
-			ft_ssl(message, *ret);
+			/* TODO: Do this when input is a string */
+			/* message.len = ft_strlen(av[i]); */
+			/* message.content = av[i]; */
+			message.len = 0;
+			message.filename = av[i];
+			message.input_mode = FILE;
+			read_ret = read_from(&message, av[i]);
+			if (read_ret > 0) {
+				ft_ssl(message, *ret);
+				if (message.content) {
+					free(message.content);
+					message.content = NULL;
+				}
+			}
 			arg_count++;
 		}
 		i++;

@@ -217,12 +217,19 @@ int md5(struct message message, uint64_t opt)
 	free_chunks(chunks, nb_chunks);
 
 	if (ret == 0) {
-		printf("%08x%08x%08x%08x\n",
+		printf("%08x%08x%08x%08x",
 			swap_uint32(digest[0]),
 			swap_uint32(digest[1]),
 			swap_uint32(digest[2]),
 			swap_uint32(digest[3])
 		);
+		if (message.input_mode == STDIN)
+			printf("  -");
+		else if (message.input_mode == FILE) {
+			if (message.filename)
+				printf("  %s", message.filename);
+		}
+		printf("\n");
 	}
 
 	if (opt & OPT_VERBOSE)
