@@ -73,12 +73,13 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 	int read_ret;
 
 	/* Options declaration */
-	const char *optstring = "hVvs:";
+	const char *optstring = "hVvs:q";
 	static struct option long_options[] = {
 		{"help",			0,					0, 'h'},
 		{"version",			0,					0, 'V'},
 		{"verbose",			0,					0, 'v'},
 		{"string",			0,					0, 's'},
+		{"quiet",			0,					0, 'q'},
 		{0,					0,					0, 0}
 	};
 
@@ -97,6 +98,9 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 				return 1;
 			case 'v':
 				*ret |= OPT_VERBOSE;
+				break;
+			case 'q':
+				*ret |= OPT_QUIET;
 				break;
 			case 's':
 				message.filename = NULL;

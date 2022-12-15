@@ -2,6 +2,7 @@
 # define OPTIONS_H
 
 # define OPT_VERBOSE		(1UL << 0)
+# define OPT_QUIET			(1UL << 1)
 
 typedef struct		s_msg {
 	struct message	*message;

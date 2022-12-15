@@ -47,5 +47,7 @@ void verbose_summary(struct message message, uint64_t opt)
 	ft_putstr("Verbose: ");
 	opt & OPT_VERBOSE ? ft_putstr("TRUE\n"):ft_putstr("FALSE\n");
 
+	printf("Quiet: %s\n", opt & OPT_QUIET ? "TRUE":"FALSE");
+
 	ft_putstr("===================\n");
 }
