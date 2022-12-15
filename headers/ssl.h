@@ -2,6 +2,7 @@
 # define SSL_H
 
 #include "libft.h"
+#include "options.h"
 #include <stdio.h>
 
 /* STDIN read */
@@ -35,7 +36,10 @@ void	print_version(void);
 void	print_usage(void);
 void	verbose_summary(struct message message, uint64_t opt);
 
+/* options.c */
+void	free_messages(t_msg **head);
+
 /* parse_option_line.c */
-int		parse_option_line(int ac, char **av, uint64_t *opt);
+int		parse_option_line(int ac, char **av, uint64_t *opt, t_msg **msg_list);
 
 #endif

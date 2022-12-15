@@ -71,9 +71,20 @@ int main(int ac, char **av)
 	uint64_t	opt = 0;
 	struct message message = {0};
 	int ret;
+	t_msg *msg_list = NULL;
+	t_msg *tmp;
 
-	if (parse_option_line(ac, av, &opt))
+	if (parse_option_line(ac, av, &opt, &msg_list)) {
+		free_messages(&msg_list);
 		return -1;
+	}
+
+	tmp = msg_list;
+	while (tmp) {
+		ft_ssl(*(tmp->message), opt);
+		tmp = tmp->next;
+	}
+	free_messages(&msg_list);
 
 	ret = read_from(&message, NULL);
 	if (ret < 0)

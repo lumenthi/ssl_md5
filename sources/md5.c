@@ -154,6 +154,12 @@ int md5(struct message message, uint64_t opt)
 	uint32_t digest[4] = {0};
 	int ret;
 
+	if (!message.content) {
+		dprintf(STDERR_FILENO,
+			"[!] Something that should not happen hapenned...\n");
+		return -1;
+	}
+
 	ft_bzero(chunks, sizeof(chunks));
 
 	if (opt & OPT_VERBOSE) {
