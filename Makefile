@@ -6,7 +6,7 @@
 #    By: lumenthi <lumenthi@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/12/22 14:06:43 by lumenthi          #+#    #+#              #
-#    Updated: 2022/12/15 16:27:39 by lumenthi         ###   ########.fr        #
+#    Updated: 2022/12/15 18:13:10 by lumenthi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,7 +62,8 @@ SRCS =	main.c \
 		ssl.c \
 		print.c \
 		md5.c \
-		sha256.c
+		sha256.c \
+		chunk.c
 
 SOURCES = $(addprefix $(SRCDIR)/, $(SRCS))
 
