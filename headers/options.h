@@ -4,6 +4,8 @@
 # define OPT_VERBOSE		(1UL << 0)
 # define OPT_QUIET			(1UL << 1)
 # define OPT_REVERSE		(1UL << 2)
+# define OPT_MD5			(1UL << 3)
+# define OPT_SHA			(1UL << 4)
 
 typedef struct		s_msg {
 	struct message	*message;

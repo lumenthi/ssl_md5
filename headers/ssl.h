@@ -14,6 +14,10 @@
 # define STDIN		2
 # define ARGUMENT	3
 
+/* Algorithms */
+# define MD5		1
+# define SHA		2
+
 /* Debug preview */
 # define PREVIEW	20
 

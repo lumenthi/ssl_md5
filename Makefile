@@ -6,7 +6,7 @@
 #    By: lumenthi <lumenthi@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/12/22 14:06:43 by lumenthi          #+#    #+#              #
-#    Updated: 2022/12/13 10:29:22 by lumenthi         ###   ########.fr        #
+#    Updated: 2022/12/15 16:27:39 by lumenthi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,8 @@ LIBFT = $(LIBDIR)/libft.a
 
 HEADS = ssl.h \
 		options.h \
-		md5.h
+		md5.h \
+		sha256.h
 
 HEADERS = $(addprefix $(HEADDIR)/, $(HEADS))
 
@@ -60,7 +61,8 @@ SRCS =	main.c \
 		parse_option_line.c \
 		ssl.c \
 		print.c \
-		md5.c
+		md5.c \
+		sha256.c
 
 SOURCES = $(addprefix $(SRCDIR)/, $(SRCS))
 

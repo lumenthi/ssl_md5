@@ -2,6 +2,7 @@
 #include "../headers/ssl.h"
 #include "options.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 static void push_message(t_msg **head, t_msg *new)
 {
@@ -120,15 +121,28 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 
 	while (i < ac) {
 		if (!is_arg_an_opt(av, i, optstring, long_options)) {
-			message.len = 0;
-			message.filename = av[i];
-			message.input_mode = FILE;
-			read_ret = read_from(&message, av[i]);
-			if (read_ret > 0) {
-				ft_ssl(message, *ret);
-				if (message.content) {
-					free(message.content);
-					message.content = NULL;
+			if (arg_count == 0) {
+				if (av[i] && !ft_strcmp("md5", av[i]))
+					*ret |= OPT_MD5;
+				else if (av[i] && !ft_strcmp("sha256", av[i]))
+					*ret |= OPT_SHA;
+				else {
+					dprintf(STDERR_FILENO, "[!] Invalid command: %s\n", av[i]);
+					print_usage();
+					return 1;
+				}
+			}
+			else {
+				message.len = 0;
+				message.filename = av[i];
+				message.input_mode = FILE;
+				read_ret = read_from(&message, av[i]);
+				if (read_ret > 0) {
+					ft_ssl(message, *ret);
+					if (message.content) {
+						free(message.content);
+						message.content = NULL;
+					}
 				}
 			}
 			arg_count++;

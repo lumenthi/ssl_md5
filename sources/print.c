@@ -21,6 +21,14 @@ void verbose_summary(struct message message, uint64_t opt)
 {
 	ft_putstr("======SUMMARY======\n");
 
+	printf("Algorithm: ");
+	if (opt & OPT_MD5)
+		printf("MD5\n");
+	else if (opt & OPT_SHA)
+		printf("SHA256\n");
+	else
+		printf("UNKNOWN\n");
+
 	ft_putstr("Message: [");
 	if (message.len > PREVIEW) {
 		write(STDOUT_FILENO, message.content, PREVIEW);
