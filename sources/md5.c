@@ -118,6 +118,15 @@ static int md5_compute(uint8_t **chunks, size_t nb_chunks)
 			D = C;
 			C = B;
 			B = B + rotate_left(E, S[k]);
+
+			/* printf("Chunk [%d]:\n", f);
+			print_mem(&cur_chunk[f], sizeof(uint32_t));
+			printf("\n"); */
+			// printf("%ld: A[%d] B[%d] C[%d] D[%d]\n", k, A, B, C, D);
+			// printf("Computing chunk %d\n", f);
+			// print_mem(&cur_chunk[f], sizeof(uint32_t));
+			// printf("\n");
+
 			k++;
 		}
 		buffer[0] += A;
@@ -126,11 +135,12 @@ static int md5_compute(uint8_t **chunks, size_t nb_chunks)
 		buffer[3] += D;
 		i++;
 	}
+
 	printf("%08x%08x%08x%08x\n",
-		(uint32_t)buffer[0],
-		(uint32_t)buffer[1],
-		(uint32_t)buffer[2],
-		(uint32_t)buffer[3]
+		swap_uint32(buffer[0]),
+		swap_uint32(buffer[1]),
+		swap_uint32(buffer[2]),
+		swap_uint32(buffer[3])
 	);
 
 	return 0;
@@ -182,7 +192,7 @@ int md5(struct message message, uint64_t opt)
 		}
 		if (i+1 >= nb_chunks) {
 			uint64_t *size_bits = (uint64_t *)(chunks[i]+RAW_CHUNK_SIZE-sizeof(uint64_t));
-			*size_bits = message.len;
+			*size_bits = message.len * CHAR_BIT;
 		}
 		i++;
 	}
