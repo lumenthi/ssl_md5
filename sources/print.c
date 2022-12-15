@@ -49,5 +49,7 @@ void verbose_summary(struct message message, uint64_t opt)
 
 	printf("Quiet: %s\n", opt & OPT_QUIET ? "TRUE":"FALSE");
 
+	printf("Reverse: %s\n", opt & OPT_REVERSE ? "TRUE":"FALSE");
+
 	ft_putstr("===================\n");
 }

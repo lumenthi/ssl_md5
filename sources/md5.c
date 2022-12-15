@@ -223,13 +223,33 @@ int md5(struct message message, uint64_t opt)
 	free_chunks(chunks, nb_chunks);
 
 	if (ret == 0) {
+		if (!(opt & OPT_QUIET) && (opt & OPT_REVERSE)) {
+			if (message.input_mode == STDIN)
+				printf("stdin");
+			else if (message.input_mode == FILE) {
+				if (message.filename)
+					printf("file(%s)", message.filename);
+			}
+			else if (message.input_mode == ARGUMENT) {
+				printf("string(");
+				if (message.len > PREVIEW) {
+					ft_putchar('\"');
+					write(STDOUT_FILENO, message.content, PREVIEW);
+					ft_putstr("...\"");
+				}
+				else
+					printf("\"%s\"", message.content);
+				printf(")");
+			}
+			printf(" = ");
+		}
 		printf("%08x%08x%08x%08x",
 			swap_uint32(digest[0]),
 			swap_uint32(digest[1]),
 			swap_uint32(digest[2]),
 			swap_uint32(digest[3])
 		);
-		if (!(opt & OPT_QUIET)) {
+		if (!(opt & OPT_QUIET) && !(opt & OPT_REVERSE)) {
 			printf("  ");
 			fflush(stdout);
 			if (message.input_mode == STDIN)
