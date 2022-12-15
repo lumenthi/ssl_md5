@@ -49,7 +49,8 @@ static size_t align(size_t value, size_t round)
 	return value;
 }
 
-static int md5_compute(uint8_t **chunks, size_t nb_chunks)
+static int md5_compute(uint8_t **chunks, size_t nb_chunks, uint32_t *digest,
+	uint64_t opt)
 {
 	/* Constants defined by the MD5 algorithm */
 	uint32_t S[] = {
@@ -78,22 +79,34 @@ static int md5_compute(uint8_t **chunks, size_t nb_chunks)
 	};
 
 	uint32_t A,B,C,D,E,f; /* MD5 Processing variables */
-	uint32_t buffer[4] = {MD5_A, MD5_B, MD5_C, MD5_D};
 	uint32_t *cur_chunk;
 	size_t i = 0, k = 0; /* Counters */
 
+	/* Digest inititalisation */
+	digest[0] = MD5_A;
+	digest[1] = MD5_B;
+	digest[2] = MD5_C;
+	digest[3] = MD5_D;
+
 	/* Break chunk into sixteen 32-bit words */
 	while (i < nb_chunks) {
+		if (opt & OPT_VERBOSE) {
+			ft_putstr("[*] MD5 Computing chunk ");
+			ft_putnbr(i);
+			ft_putstr("\n");
+		}
+		if (!chunks[i]) {
+			ft_putstr_fd("[!] An error hapenned during the calculation process\n",
+				STDERR_FILENO);
+			return -1;
+		}
 		cur_chunk = (uint32_t *)chunks[i];
 		/* For each uint32_t blocks, do */
-		// printf("Computing chunk %ld\n", i);
-		// print_mem(cur_chunk, sizeof(uint32_t) * 16);
-		// printf("\n");
 		/* Init hash variables for this chunk */
-		A = buffer[0];
-		B = buffer[1];
-		C = buffer[2];
-		D = buffer[3];
+		A = digest[0];
+		B = digest[1];
+		C = digest[2];
+		D = digest[3];
 		k = 0;
 		/* Main loop */
 		while (k < 64) {
@@ -118,30 +131,14 @@ static int md5_compute(uint8_t **chunks, size_t nb_chunks)
 			D = C;
 			C = B;
 			B = B + rotate_left(E, S[k]);
-
-			/* printf("Chunk [%d]:\n", f);
-			print_mem(&cur_chunk[f], sizeof(uint32_t));
-			printf("\n"); */
-			// printf("%ld: A[%d] B[%d] C[%d] D[%d]\n", k, A, B, C, D);
-			// printf("Computing chunk %d\n", f);
-			// print_mem(&cur_chunk[f], sizeof(uint32_t));
-			// printf("\n");
-
 			k++;
 		}
-		buffer[0] += A;
-		buffer[1] += B;
-		buffer[2] += C;
-		buffer[3] += D;
+		digest[0] += A;
+		digest[1] += B;
+		digest[2] += C;
+		digest[3] += D;
 		i++;
 	}
-
-	printf("%08x%08x%08x%08x\n",
-		swap_uint32(buffer[0]),
-		swap_uint32(buffer[1]),
-		swap_uint32(buffer[2]),
-		swap_uint32(buffer[3])
-	);
 
 	return 0;
 }
@@ -154,6 +151,8 @@ int md5(struct message message, uint64_t opt)
 	size_t count = 0;
 	uint8_t *chunks[nb_chunks];
 	uint8_t *content_bits;
+	uint32_t digest[4] = {0};
+	int ret;
 
 	ft_bzero(chunks, sizeof(chunks));
 
@@ -199,7 +198,13 @@ int md5(struct message message, uint64_t opt)
 
 	(void)print_chunks;
 	/* print_chunks(chunks, nb_chunks); */
-	md5_compute(chunks, nb_chunks);
+
+	/* calculation process */
+	if (opt & OPT_VERBOSE)
+		ft_putstr("[*] Starting the calculation process\n");
+	ret = md5_compute(chunks, nb_chunks, digest, opt);
+	if (opt & OPT_VERBOSE)
+		ft_putstr("[*] Finished calculation process\n");
 
 	/* Freeing chunks */
 	if (opt & OPT_VERBOSE) {
@@ -211,8 +216,17 @@ int md5(struct message message, uint64_t opt)
 	}
 	free_chunks(chunks, nb_chunks);
 
+	if (ret == 0) {
+		printf("%08x%08x%08x%08x\n",
+			swap_uint32(digest[0]),
+			swap_uint32(digest[1]),
+			swap_uint32(digest[2]),
+			swap_uint32(digest[3])
+		);
+	}
+
 	if (opt & OPT_VERBOSE)
-		ft_putstr("[*] Done\n");
+		ft_putstr("[*] MD5 Done\n");
 
 	return 0;
 }
