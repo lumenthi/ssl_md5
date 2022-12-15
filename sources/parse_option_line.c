@@ -150,5 +150,10 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 		i++;
 	}
 
+	if (arg_count < 1) {
+		print_usage();
+		return 1;
+	}
+
 	return 0;
 }

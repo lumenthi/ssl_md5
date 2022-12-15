@@ -32,6 +32,10 @@ struct	message {
 int		read_from(struct message *message, char *file);
 
 /* ssl.c */
+void print_mem(void *address, size_t size);
+void	print_chunks(uint8_t **chunks, size_t nb_chunks);
+void	free_chunks(uint8_t **chunks, size_t nb_chunks);
+size_t	align(size_t value, size_t round);
 int		ft_ssl(struct message message, uint64_t opt);
 
 /* print.c */
