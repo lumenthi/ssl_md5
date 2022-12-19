@@ -13,6 +13,16 @@
  */
 # define SHA256_PADDED(len) (align(len+1+sizeof(uint64_t), RAW_CHUNK_SIZE))
 
+/* Constants defined by the SHA256 algorithm */
+#define SHA256_A 0x6a09e667
+#define SHA256_B 0xbb67ae85
+#define SHA256_C 0x3c6ef372
+#define SHA256_D 0xa54ff53a
+#define SHA256_E 0x510e527f
+#define SHA256_F 0x9b05688c
+#define sha256_G 0x1f83d9ab
+#define sha256_H 0x5be0cd19
+
 /* sha256.c */
 int		sha256(struct message message, uint64_t opt);
 

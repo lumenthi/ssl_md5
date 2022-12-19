@@ -2,21 +2,6 @@
 #include "../headers/options.h"
 #include <unistd.h>
 
-void print_help()
-{
-	ft_putstr("Help menu\n");
-}
-
-void print_version()
-{
-	ft_putstr("Version menu\n");
-}
-
-void print_usage()
-{
-	ft_putstr("Usage menu\n");
-}
-
 void verbose_summary(struct message message, uint64_t opt)
 {
 	ft_putstr("======SUMMARY======\n");

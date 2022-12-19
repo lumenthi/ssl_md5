@@ -40,10 +40,12 @@ size_t	align(size_t value, size_t round);
 /* ssl.c */
 int		ft_ssl(struct message message, uint64_t opt);
 
-/* print.c */
+/* help.c */
 void	print_help(void);
 void	print_version(void);
 void	print_usage(void);
+
+/* print.c */
 void	verbose_summary(struct message message, uint64_t opt);
 
 /* options.c */
