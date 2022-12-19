@@ -63,9 +63,12 @@ static int sha256_compute(uint8_t **chunks, size_t nb_chunks, uint32_t *digest,
 		cur_chunk = (uint32_t *)chunks[i];
 		while (k < 64) {
 			if (k < 16)
-				split_chunk[k] = cur_chunk[k];
-			else
-				split_chunk[k] = 0x0;
+				split_chunk[k] = swap_uint32(cur_chunk[k]); /* Swap bits */
+			else {
+				split_chunk[k] =
+					split_chunk[k-16] + SHA256_S0(split_chunk[k-15]) +
+					split_chunk[k-7] + SHA256_S1(split_chunk[k-2]);
+			}
 			printf("Split Chunk [%ld]\n", k);
 			print_mem(split_chunk+k, sizeof(*split_chunk));
 			printf("\n");
@@ -143,6 +146,7 @@ int sha256(struct message message, uint64_t opt)
 		if (i+1 >= nb_chunks) {
 			uint64_t *size_bits = (uint64_t *)(chunks[i]+RAW_CHUNK_SIZE-sizeof(uint64_t));
 			*size_bits = message.len * CHAR_BIT;
+			*size_bits = swap_uint64(*size_bits);
 		}
 		i++;
 	}

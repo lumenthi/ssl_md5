@@ -21,6 +21,13 @@
 /* Debug preview */
 # define PREVIEW	20
 
+/* Rotate macros used in hashing algorithms */
+#define rotate_left(x, n) ((x << n) | (x >> (32 - n)))
+#define rotate_right(x, n) ((x >> n) | (x << (32 - n)))
+/* Shift macros used in hashing algorithms */
+#define shift_left(x, n) (x << n)
+#define shift_right(x, n) (x >> n)
+
 struct	message {
 	char *filename; /* If input mode is a file, keep the filename */
 	char *content; /* Message's buffer */

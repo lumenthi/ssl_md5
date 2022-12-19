@@ -23,6 +23,10 @@
 #define sha256_G 0x1f83d9ab
 #define sha256_H 0x5be0cd19
 
+/* Bit-manipulation function defined by the SHA256 algorithm */
+#define SHA256_S0(X) (rotate_right(X,7) ^ rotate_right(X,18) ^ shift_right(X,3))
+#define SHA256_S1(X) (rotate_right(X,17) ^ rotate_right(X,19) ^ shift_right(X,10))
+
 /* sha256.c */
 int		sha256(struct message message, uint64_t opt);
 
