@@ -88,10 +88,14 @@ static int md5_compute(uint8_t **chunks, size_t nb_chunks, uint32_t *digest,
 			B = B + rotate_left(E, S[k]);
 			k++;
 		}
+
+		/* Add the compressed chunk to the current hash value */
 		digest[0] += A;
 		digest[1] += B;
 		digest[2] += C;
 		digest[3] += D;
+
+		/* Next chunk */
 		i++;
 	}
 

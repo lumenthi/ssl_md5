@@ -24,8 +24,16 @@
 #define sha256_H 0x5be0cd19
 
 /* Bit-manipulation function defined by the SHA256 algorithm */
+/* Chunks setup signatures */
 #define SHA256_S0(X) (rotate_right(X,7) ^ rotate_right(X,18) ^ shift_right(X,3))
 #define SHA256_S1(X) (rotate_right(X,17) ^ rotate_right(X,19) ^ shift_right(X,10))
+/* Main loop signatures */
+#define SHA256_SIG0(X) (rotate_right(X,2) ^ rotate_right(X, 13) ^ rotate_right(X, 22))
+#define SHA256_SIG1(X) (rotate_right(X,6) ^ rotate_right(X, 11) ^ rotate_right(X, 25))
+/* Choose */
+#define SHA256_CH(X,Y,Z) ((X&Y) ^ (~(X)&Z))
+/* Majority decision */
+#define SHA256_MD(X,Y,Z) ((X&Y) ^ (X&Z) ^ (Y&Z))
 
 /* sha256.c */
 int		sha256(struct message message, uint64_t opt);

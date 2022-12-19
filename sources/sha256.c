@@ -26,13 +26,11 @@ static int sha256_compute(uint8_t **chunks, size_t nb_chunks, uint32_t *digest,
 		0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
 		0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 	};
-	(void)K;
 	uint32_t *cur_chunk;
 	uint32_t split_chunk[64] = {0};
 	uint32_t A,B,C,D,E,F,G,H; /* SHA256 Processing variables */
-	(void)A;(void)B;(void)C;(void)D;(void)E;(void)F;(void)G;(void)H;
+	uint32_t tmp1, tmp2; /* Temporary variables used in the main loop */
 	size_t i = 0, j = 0, k = 0; /* Counters */
-	(void)i;(void)j;(void)k;
 
 	/* Digest inititalisation */
 	digest[0] = SHA256_A;
@@ -69,9 +67,10 @@ static int sha256_compute(uint8_t **chunks, size_t nb_chunks, uint32_t *digest,
 					split_chunk[k-16] + SHA256_S0(split_chunk[k-15]) +
 					split_chunk[k-7] + SHA256_S1(split_chunk[k-2]);
 			}
-			printf("Split Chunk [%ld]\n", k);
+			/* Debug */
+			/* printf("Split Chunk [%ld]\n", k);
 			print_mem(split_chunk+k, sizeof(*split_chunk));
-			printf("\n");
+			printf("\n"); */
 			k++;
 		}
 
@@ -85,6 +84,35 @@ static int sha256_compute(uint8_t **chunks, size_t nb_chunks, uint32_t *digest,
 		G = digest[6];
 		H = digest[7];
 
+		/* Compression function main loop */
+		while (j < 64) {
+			tmp1 = H + SHA256_SIG1(E) + SHA256_CH(E, F, G) + K[j] + split_chunk[j];
+			tmp2 = SHA256_SIG0(A) + SHA256_MD(A, B, C);
+			H = G;
+			G = F;
+			F = E;
+			E = D + tmp1;
+			D = C;
+			C = B;
+			B = A;
+			A = tmp1 + tmp2;
+			/* Debug */
+			/*printf("Values for chunk [%ld]\n", j);
+			printf("A[%d] B[%d] C[%d] D[%d] E[%d] F[%d] G[%d] H[%d]\n",
+				A,B,C,D,E,F,G,H);*/
+			j++;
+		}
+		/* Add the compressed chunk to the current hash value */
+		digest[0] += A;
+		digest[1] += B;
+		digest[2] += C;
+		digest[3] += D;
+		digest[4] += E;
+		digest[5] += F;
+		digest[6] += G;
+		digest[7] += H;
+
+		/* Next chunk */
 		i++;
 	}
 
@@ -172,5 +200,20 @@ int sha256(struct message message, uint64_t opt)
 	free_chunks(chunks, nb_chunks);
 	/* TODO: Remove */
 	(void)ret;
+
+	printf("%08x%08x%08x%08x%08x%08x%08x%08x\n",
+		digest[0],
+		digest[1],
+		digest[2],
+		digest[3],
+		digest[4],
+		digest[5],
+		digest[6],
+		digest[7]
+	);
+
+	if (opt & OPT_VERBOSE)
+		ft_putstr("[*] SHA256 Done\n");
+
 	return 0;
 }
