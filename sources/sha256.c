@@ -27,8 +27,12 @@ static int sha256_compute(uint8_t **chunks, size_t nb_chunks, uint32_t *digest,
 		0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 	};
 	(void)K;
-	//uint32_t *cur_chunk;
-	size_t i = 0; /* Counters */
+	uint32_t *cur_chunk;
+	uint32_t split_chunk[64] = {0};
+	uint32_t A,B,C,D,E,F,G,H; /* SHA256 Processing variables */
+	(void)A;(void)B;(void)C;(void)D;(void)E;(void)F;(void)G;(void)H;
+	size_t i = 0, j = 0, k = 0; /* Counters */
+	(void)i;(void)j;(void)k;
 
 	/* Digest inititalisation */
 	digest[0] = SHA256_A;
@@ -51,8 +55,33 @@ static int sha256_compute(uint8_t **chunks, size_t nb_chunks, uint32_t *digest,
 				STDERR_FILENO);
 			return -1;
 		}
-		//cur_chunk = (uint32_t *)chunks[i];
-		//(void)cur_chunk;
+		/* Set counters to 0 */
+		j = 0;
+		k = 0;
+
+		/* Prepare chunks */
+		cur_chunk = (uint32_t *)chunks[i];
+		while (k < 64) {
+			if (k < 16)
+				split_chunk[k] = cur_chunk[k];
+			else
+				split_chunk[k] = 0x0;
+			printf("Split Chunk [%ld]\n", k);
+			print_mem(split_chunk+k, sizeof(*split_chunk));
+			printf("\n");
+			k++;
+		}
+
+		/* Init hash variables for this chunk */
+		A = digest[0];
+		B = digest[1];
+		C = digest[2];
+		D = digest[3];
+		E = digest[4];
+		F = digest[5];
+		G = digest[6];
+		H = digest[7];
+
 		i++;
 	}
 
@@ -119,7 +148,7 @@ int sha256(struct message message, uint64_t opt)
 	}
 
 	// (void)print_chunks;
-	print_chunks(chunks, nb_chunks);
+	/* print_chunks(chunks, nb_chunks); */
 
 	/* calculation process */
 	if (opt & OPT_VERBOSE)
