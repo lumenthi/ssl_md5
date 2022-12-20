@@ -198,19 +198,9 @@ int sha256(struct message message, uint64_t opt)
 		ft_putstr(" bits\n");
 	}
 	free_chunks(chunks, nb_chunks);
-	/* TODO: Remove */
-	(void)ret;
 
-	printf("%08x%08x%08x%08x%08x%08x%08x%08x\n",
-		digest[0],
-		digest[1],
-		digest[2],
-		digest[3],
-		digest[4],
-		digest[5],
-		digest[6],
-		digest[7]
-	);
+	if (ret == 0)
+		print_end(message, digest, SHA, opt);
 
 	if (opt & OPT_VERBOSE)
 		ft_putstr("[*] SHA256 Done\n");
