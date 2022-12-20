@@ -21,6 +21,7 @@ static void	*brealloc(void *ptr, size_t new_size, size_t old_size)
 	return new_ptr;
 }
 
+/* TODO: -p, echo STDIN to STDOUT and append the checksum to STDOUT and update help menu */
 /* TODO: Check error cases leaks etc.. ? Force them */
 /* TODO: Handle `echo -n "" | ./ft_ssl` */
 int read_from(struct message *message, char *file)

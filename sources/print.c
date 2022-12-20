@@ -18,6 +18,7 @@ void print_end(struct message message, uint32_t *digest, uint8_t algorithm,
 		}
 		else if (message.input_mode == ARGUMENT) {
 			printf("string(");
+			fflush(stdout);
 			if (message.len > PREVIEW) {
 				ft_putchar('\"');
 				write(STDOUT_FILENO, message.content, PREVIEW);

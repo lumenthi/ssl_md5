@@ -19,7 +19,7 @@
 # define SHA		2
 
 /* Debug preview */
-# define PREVIEW	20
+# define PREVIEW	40
 
 /* Rotate macros used in hashing algorithms */
 #define rotate_left(x, n) ((x << n) | (x >> (32 - n)))
