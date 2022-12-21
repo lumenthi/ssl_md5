@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-static void	*brealloc(void *ptr, size_t new_size, size_t old_size)
+static void *brealloc(void *ptr, size_t new_size, size_t old_size)
 {
 	void *new_ptr = malloc(new_size);
 
@@ -24,6 +24,7 @@ static void	*brealloc(void *ptr, size_t new_size, size_t old_size)
 /* TODO: -p, echo STDIN to STDOUT and append the checksum to STDOUT and update help menu */
 /* TODO: Check error cases leaks etc.. ? Force them */
 /* TODO: Handle `echo -n "" | ./ft_ssl` */
+/* TODO: Handle `./ft_ssl md5 -s 42`, `./ft_ssl md5 -s "salut"` */
 int read_from(struct message *message, char *file)
 {
 	size_t i = 2;
@@ -33,7 +34,9 @@ int read_from(struct message *message, char *file)
 
 	/* File opening */
 	if (!file)
-		fd = open(STDIN_DEVICE, O_NONBLOCK|O_RDONLY);
+		fd = 0;
+		/* fd = open(STDIN_DEVICE, O_RDONLY);
+		fd = open(STDIN_DEVICE, O_NONBLOCK|O_RDONLY); */
 	else
 		fd = open(file, O_NONBLOCK|O_RDONLY);
 	if (fd == -1) {
@@ -51,19 +54,27 @@ int read_from(struct message *message, char *file)
 	ft_bzero(message->content, READ_SIZE);
 	tmp = message->content;
 
-	while((ret = read(fd, tmp, READ_SIZE)) > 0) {
+	while ((ret = read(fd, tmp, READ_SIZE)) >= 0) {
+		if (!ret) {
+			if (i == 2)
+				i++;
+			break;
+		}
 		if (!(message->content = brealloc(message->content, i*READ_SIZE, (i-1)*READ_SIZE))) {
 			dprintf(STDERR_FILENO,
 				"[!] Cannot read from %s, malloc failed\n", file ? file:"STDIN");
 			return -1;
 		}
 		message->len += ret;
+		/* printf("[*] Advancing cursor %ld\n", message->len);*/
 		tmp = message->content;
-		tmp = (void*)tmp + (READ_SIZE*(i-1));
+		tmp = (void*)tmp + message->len;
 		i++;
 	}
 
-	close(fd);
+	if (fd)
+		close(fd);
+
 	return i-2;
 }
 
