@@ -6,8 +6,9 @@
 # define OPT_REVERSE		(1UL << 2)
 # define OPT_MD5			(1UL << 3)
 # define OPT_SHA			(1UL << 4)
+# define OPT_PRINT			(1UL << 5)
 
-# define STDIN_NBLOCK		(1UL << 5)
+# define STDIN_NBLOCK		(1UL << 6)
 
 typedef struct		s_msg {
 	struct message	*message;

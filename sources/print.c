@@ -7,17 +7,20 @@ void print_end(struct message message, uint32_t *digest, uint8_t algorithm,
 {
 	if (!(opt & OPT_QUIET) && !(opt & OPT_REVERSE)) {
 		if (algorithm == MD5)
-			printf("MD5 ");
+			printf("MD5");
 		else
-			printf("SHA256 ");
-		if (message.input_mode == STDIN)
-			printf("stdin");
+			printf("SHA256");
+		if (message.input_mode == STDIN) {
+			printf(" stdin");
+			if (opt & OPT_PRINT)
+				printf("(\"%s\")", message.content);
+		}
 		else if (message.input_mode == FILE) {
 			if (message.filename)
-				printf("file(%s)", message.filename);
+				printf(" file(%s)", message.filename);
 		}
 		else if (message.input_mode == ARGUMENT) {
-			printf("string(");
+			printf(" string(");
 			fflush(stdout);
 			if (message.len > PREVIEW) {
 				ft_putchar('\"');
@@ -113,6 +116,8 @@ void verbose_summary(struct message message, uint64_t opt)
 	printf("Quiet: %s\n", opt & OPT_QUIET ? "TRUE":"FALSE");
 
 	printf("Reverse: %s\n", opt & OPT_REVERSE ? "TRUE":"FALSE");
+
+	printf("Print: %s\n", opt & OPT_PRINT ? "TRUE":"FALSE");
 
 	ft_putstr("===================\n");
 }

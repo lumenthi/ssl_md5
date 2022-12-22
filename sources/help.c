@@ -65,6 +65,7 @@ static void input()
 static void options()
 {
 	printf("OPTIONS:\n"
+			"  -p --print: echo STDIN to STDOUT and append the checksum to STDOUT\n"
 			"  -s --string: Print the sum of the given string\n"
 			"  -r --reverse: Reverse the format of the output\n"
 			"  -q --quiet: Quiet mode\n"
