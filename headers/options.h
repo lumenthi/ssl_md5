@@ -7,6 +7,8 @@
 # define OPT_MD5			(1UL << 3)
 # define OPT_SHA			(1UL << 4)
 
+# define STDIN_NBLOCK		(1UL << 5)
+
 typedef struct		s_msg {
 	struct message	*message;
 	struct s_msg	*next;

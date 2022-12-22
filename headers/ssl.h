@@ -36,7 +36,7 @@ struct	message {
 };
 
 /* main.c */
-int		read_from(struct message *message, char *file);
+int		read_from(struct message *message, char *file, uint8_t non_block);
 
 /* chunk.c */
 void	print_mem(void *address, size_t size);

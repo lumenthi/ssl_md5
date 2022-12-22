@@ -108,6 +108,7 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 				*ret |= OPT_REVERSE;
 				break;
 			case 's':
+				*ret |= STDIN_NBLOCK;
 				message.filename = NULL;
 				message.len = ft_strlen(optarg);
 				message.content = optarg;
@@ -133,10 +134,11 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 				}
 			}
 			else {
+				*ret |= STDIN_NBLOCK;
 				message.len = 0;
 				message.filename = av[i];
 				message.input_mode = FILE;
-				read_ret = read_from(&message, av[i]);
+				read_ret = read_from(&message, av[i], 0);
 				if (read_ret > 0) {
 					ft_ssl(message, *ret);
 					if (message.content) {
