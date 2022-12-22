@@ -56,8 +56,12 @@ void print_end(struct message message, uint32_t *digest, uint8_t algorithm,
 	if (!(opt & OPT_QUIET) && (opt & OPT_REVERSE)) {
 		printf("  ");
 		fflush(stdout);
-		if (message.input_mode == STDIN)
-			printf("-");
+		if (message.input_mode == STDIN) {
+			if (opt & OPT_PRINT)
+				printf("stdin(\"%s\")", message.content);
+			else
+				printf("-");
+		}
 		else if (message.input_mode == FILE) {
 			if (message.filename)
 				printf("%s", message.filename);

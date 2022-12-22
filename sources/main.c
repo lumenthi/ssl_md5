@@ -21,7 +21,6 @@ static void *brealloc(void *ptr, size_t new_size, size_t old_size)
 	return new_ptr;
 }
 
-/* TODO: -p, echo STDIN to STDOUT and append the checksum to STDOUT and update help menu */
 /* TODO: Check error cases leaks etc.. ? Force them */
 int read_from(struct message *message, char *file, uint8_t non_block)
 {
@@ -97,6 +96,9 @@ int main(int ac, char **av)
 		tmp = tmp->next;
 	}
 	free_messages(&msg_list);
+
+	if ((opt & STDIN_NBLOCK) && !(opt & OPT_PRINT))
+		return 0;
 
 	ret = read_from(&message, NULL, (opt & STDIN_NBLOCK));
 	if (ret < 0)
