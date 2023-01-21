@@ -76,7 +76,7 @@ void print_end(struct message message, uint32_t *digest, uint8_t algorithm,
 		fflush(stdout);
 		if (message.input_mode == STDIN) {
 			if (opt & OPT_PRINT) {
-				printf("(\"");
+				printf("stdin(\"");
 				fflush(stdout);
 				print_input(message.content);
 				printf("\")");
