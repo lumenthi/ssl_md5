@@ -37,7 +37,7 @@ int read_from(struct message *message, char *file, uint8_t non_block)
 			fd = 0;
 	}
 	else
-		fd = open(file, O_NONBLOCK|O_RDONLY);
+		fd = open(file, O_RDONLY);
 	if (fd == -1) {
 		dprintf(STDERR_FILENO,
 			"[!] Cannot read from %s, open failed\n", file ? file:"STDIN");
