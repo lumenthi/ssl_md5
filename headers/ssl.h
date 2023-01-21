@@ -54,8 +54,8 @@ void	print_usage(void);
 
 /* print.c */
 void	verbose_summary(struct message message, uint64_t opt);
-void print_end(struct message message, uint32_t *digest, uint8_t algorithm,
-	uint64_t opt);
+void	print_end(struct message message, uint32_t *digest, uint8_t algorithm,
+			uint64_t opt);
 
 /* options.c */
 void	free_messages(t_msg **head);

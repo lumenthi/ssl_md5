@@ -21,7 +21,6 @@ static void *brealloc(void *ptr, size_t new_size, size_t old_size)
 	return new_ptr;
 }
 
-/* TODO: Check error cases leaks etc.. ? Force them */
 int read_from(struct message *message, char *file, uint8_t non_block)
 {
 	size_t i = 2;
