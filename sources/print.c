@@ -19,6 +19,13 @@ void print_input(char *message)
 void print_end(struct message message, uint32_t *digest, uint8_t algorithm,
 	uint64_t opt)
 {
+	if ((opt & OPT_QUIET) && (opt & OPT_PRINT)) {
+		if (message.input_mode == STDIN) {
+				fflush(stdout);
+				print_input(message.content);
+				printf("\n");
+		}
+	}
 	if (!(opt & OPT_QUIET) && !(opt & OPT_REVERSE)) {
 		if (algorithm == MD5)
 			printf("MD5");
