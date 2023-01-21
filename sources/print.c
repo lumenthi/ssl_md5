@@ -2,6 +2,20 @@
 #include "../headers/options.h"
 #include <unistd.h>
 
+void print_input(char *message)
+{
+	int i = 0;
+
+	if (!message)
+		return;
+
+	while(message[i]) {
+		if (message[i] != '\n')
+			write(1, message+i, 1);
+		i++;
+	}
+}
+
 void print_end(struct message message, uint32_t *digest, uint8_t algorithm,
 	uint64_t opt)
 {
@@ -12,8 +26,12 @@ void print_end(struct message message, uint32_t *digest, uint8_t algorithm,
 			printf("SHA256");
 		if (message.input_mode == STDIN) {
 			printf(" stdin");
-			if (opt & OPT_PRINT)
-				printf("(\"%s\")", message.content);
+			if (opt & OPT_PRINT) {
+				printf("(\"");
+				fflush(stdout);
+				print_input(message.content);
+				printf("\")");
+			}
 		}
 		else if (message.input_mode == FILE) {
 			if (message.filename)
@@ -57,8 +75,12 @@ void print_end(struct message message, uint32_t *digest, uint8_t algorithm,
 		printf("  ");
 		fflush(stdout);
 		if (message.input_mode == STDIN) {
-			if (opt & OPT_PRINT)
-				printf("stdin(\"%s\")", message.content);
+			if (opt & OPT_PRINT) {
+				printf("(\"");
+				fflush(stdout);
+				print_input(message.content);
+				printf("\")");
+			}
 			else
 				printf("-");
 		}
