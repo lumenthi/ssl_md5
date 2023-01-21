@@ -111,6 +111,7 @@ int md5(struct message message, uint64_t opt)
 	uint8_t *chunks[nb_chunks];
 	uint8_t *content_bits;
 	uint32_t digest[4] = {0};
+	uint8_t end = 0;
 	int ret;
 
 	if (!message.content) {
@@ -139,21 +140,22 @@ int md5(struct message message, uint64_t opt)
 			break;
 		}
 		ft_bzero(chunks[i], RAW_CHUNK_SIZE);
-		/* Last chunk */
 		content_bits = (uint8_t *)(chunks[i]);
 		offset = i*RAW_CHUNK_SIZE;
 		count = 0;
 		while (count < RAW_CHUNK_SIZE) {
 			content_bits[count] = (message.content)[offset];
-			if (offset >= message.len) {
+			if (offset >= message.len && !end) {
 				/* Setting the bit after our message to '1' */
 				/* Writing bits '1000 0000' (0x80) */
 				content_bits[count] = 0x80;
+				end = 1;
 				break;
 			}
 			offset++;
 			count++;
 		}
+		/* Last chunk */
 		if (i+1 >= nb_chunks) {
 			uint64_t *size_bits = (uint64_t *)(chunks[i]+RAW_CHUNK_SIZE-sizeof(uint64_t));
 			*size_bits = message.len * CHAR_BIT;

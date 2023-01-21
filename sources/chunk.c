@@ -14,11 +14,6 @@ void print_mem(void *address, size_t size)
 	}
 }
 
-/*
- * TODO: Beware, RAW_CHUNK_SIZE can vary depending of algorithms.
- *   Here, only the RAW_CHUNK_SIZE from the MD5 algorithm is imported,
- *   it works for SHA256 since they share the same block size.
-*/
 void print_chunks(uint8_t **chunks, size_t nb_chunks)
 {
 	size_t i = 0;

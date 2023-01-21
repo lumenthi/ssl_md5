@@ -8,10 +8,9 @@
 
 /*
  * Original length +
- * 1 (for appended '1') +
  * 64 (representing the length of the original message)
  */
-# define SHA256_PADDED(len) (align(len+1+sizeof(uint64_t), RAW_CHUNK_SIZE))
+# define SHA256_PADDED(len) (align(len+sizeof(uint64_t), RAW_CHUNK_SIZE))
 
 /* Constants defined by the SHA256 algorithm */
 #define SHA256_A 0x6a09e667
