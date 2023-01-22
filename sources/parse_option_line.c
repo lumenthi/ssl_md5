@@ -153,7 +153,7 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list,
 					print_usage();
 					return -1;
 				}
-				if (tmp_msg) {
+				while (tmp_msg) {
 					tmp_msg->message->command = &cmd_list[cmd_index];
 					tmp_msg = tmp_msg->next;
 				}
