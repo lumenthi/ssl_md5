@@ -1,4 +1,6 @@
 #include "../headers/ssl.h"
+#include "../headers/md5.h"
+#include "../headers/sha256.h"
 #include "../headers/options.h"
 
 #include <stdlib.h>
@@ -81,10 +83,18 @@ int main(int ac, char **av)
 	uint64_t opt = 0;
 	struct message message = {0};
 	int ret;
+	int cmd_index;
 	t_msg *msg_list = NULL;
 	t_msg *tmp;
 
-	if (parse_option_line(ac, av, &opt, &msg_list)) {
+	/* Dynamic commands declaration with function pointer */
+	struct command cmd_list[] = {
+		{"md5", md5},
+		{"sha256", sha256},
+		{NULL, NULL}
+	};
+
+	if ((cmd_index = parse_option_line(ac, av, &opt, &msg_list, cmd_list)) < 0) {
 		free_messages(&msg_list);
 		return -1;
 	}
@@ -103,6 +113,7 @@ int main(int ac, char **av)
 	if (ret < 0)
 		return -1;
 	else if (ret != 0) {
+		message.command = &cmd_list[cmd_index];
 		message.input_mode = STDIN;
 		ft_ssl(message, opt);
 	}

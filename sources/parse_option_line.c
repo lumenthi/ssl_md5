@@ -62,7 +62,24 @@ static void add_message(t_msg **head, struct message message)
 	push_message(head, tmp);
 }
 
-int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
+static int valid_cmd(char *name, struct command *cmd_list)
+{
+	if (!name || !cmd_list)
+		return -1;
+
+	int i = 0;
+
+	while (cmd_list[i].name != NULL) {
+		if (!(ft_strcmp(name, cmd_list[i].name)))
+			return i;
+		i++;
+	}
+
+	return -1;
+}
+
+int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list,
+		struct command *cmd_list)
 {
 	int opt = 0;
 	int option_index = 0;
@@ -95,10 +112,10 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 				break;
 			case 'h':
 				print_help();
-				return 1;
+				return -1;
 			case 'V':
 				print_version();
-				return 1;
+				return -1;
 			case 'v':
 				*ret |= OPT_VERBOSE;
 				break;
@@ -120,25 +137,30 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 				add_message(msg_list, message);
 				break;
 			default:
-				return 1;
+				return -1;
 		}
 	}
+
+	int cmd_index = -1;
+	t_msg *tmp_msg = *msg_list;
 
 	while (i < ac) {
 		if (!is_arg_an_opt(av, i, optstring, long_options)) {
 			if (arg_count == 0) {
-				if (av[i] && !ft_strcmp("md5", av[i]))
-					*ret |= OPT_MD5;
-				else if (av[i] && !ft_strcmp("sha256", av[i]))
-					*ret |= OPT_SHA;
-				else {
+				cmd_index = valid_cmd(av[i], cmd_list);
+				if (cmd_index == -1) {
 					dprintf(STDERR_FILENO, "[!] Invalid command: %s\n", av[i]);
 					print_usage();
-					return 1;
+					return -1;
+				}
+				if (tmp_msg) {
+					tmp_msg->message->command = &cmd_list[cmd_index];
+					tmp_msg = tmp_msg->next;
 				}
 			}
 			else {
 				*ret |= STDIN_NBLOCK;
+				message.command = &cmd_list[cmd_index];
 				message.len = 0;
 				message.filename = av[i];
 				message.input_mode = FILE;
@@ -158,8 +180,8 @@ int parse_option_line(int ac, char **av, uint64_t *ret, t_msg **msg_list)
 
 	if (arg_count < 1) {
 		print_usage();
-		return 1;
+		return -1;
 	}
 
-	return 0;
+	return cmd_index;
 }

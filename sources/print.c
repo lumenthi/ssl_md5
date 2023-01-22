@@ -113,10 +113,8 @@ void verbose_summary(struct message message, uint64_t opt)
 	ft_putstr("======SUMMARY======\n");
 
 	printf("Algorithm: ");
-	if (opt & OPT_MD5)
-		printf("MD5\n");
-	else if (opt & OPT_SHA)
-		printf("SHA256\n");
+	if (message.command && message.command->name)
+		printf("%s\n", message.command->name);
 	else
 		printf("UNKNOWN\n");
 

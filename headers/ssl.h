@@ -28,10 +28,17 @@
 #define shift_left(x, n) (x << n)
 #define shift_right(x, n) (x >> n)
 
+/* Command structure */
+struct command {
+	char *name;
+	int (*routine)(struct message, long unsigned int);
+};
+
 struct	message {
 	char *filename; /* If input mode is a file, keep the filename */
 	char *content; /* Message's buffer */
 	size_t len; /* Length of the message */
+	struct command *command; /* Algorithm to use for this message */
 	uint8_t input_mode; /* Input mode for the message */
 };
 
@@ -61,6 +68,7 @@ void	print_end(struct message message, uint32_t *digest, uint8_t algorithm,
 void	free_messages(t_msg **head);
 
 /* parse_option_line.c */
-int		parse_option_line(int ac, char **av, uint64_t *opt, t_msg **msg_list);
+int		parse_option_line(int ac, char **av, uint64_t *opt, t_msg **msg_list,
+			struct command *cmd_list);
 
 #endif
